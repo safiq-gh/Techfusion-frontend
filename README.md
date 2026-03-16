@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🚀 Techfusion Frontend
 
 A modern, API-driven event registration platform built for a college tech fest. Designed with a futuristic UI and smooth animations, this application provides a seamless registration experience with payment integration and real-time validation.
@@ -43,3 +44,7 @@ This frontend strictly follows a backend API contract:
 ```bash
 npm install
 npm run dev
+=======
+# TECHFUSION-2.0
+A redesigned TechFusion frontend built with React + Vite for managing and displaying college technical events with a clean and responsive user interface.
+>>>>>>> 1f5173807a7e31006215aaa0a92d0a176d179ef2
