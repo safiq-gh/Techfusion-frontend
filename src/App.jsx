@@ -51,7 +51,8 @@ function App() {
         if (res.data?.success && res.data?.data) {
           setEvent(res.data.data);
         } else {
-          setError({});
+          setError(null);
+          setLoading(false)
         }
       } catch (err) {
         const isRetryable = err.type === "NETWORK" || err.status === 503 || err.type === "TIMEOUT" || err.status === 504;
@@ -61,7 +62,8 @@ function App() {
             fetchEventData();
           }, env.api.retryDelay);
         } else {
-          setError({});
+          setError(null);
+          setLoading(false)
         }
       } finally {
         // We don't set loading false here because setEvent does it internally usually,
