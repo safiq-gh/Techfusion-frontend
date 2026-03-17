@@ -16,8 +16,8 @@ import DataStreamBg from "./components/DataStreamBg";
 import LoadingSkeleton from "./components/LoadingSkeleton"; // Added Import
 
 // ✅ IMPORT ENV CONFIG
-//import env from "./config/env";
-//import { getEvent } from "./services/api";
+import env from "./config/env";
+import { getEvent } from "./services/api";
 import { useEventStore } from "./store/useEventStore";
 
 function ScrollToTop() {
@@ -39,10 +39,44 @@ function App() {
 
   // ✅ FETCH EVENT DATA WITH RETRY LOGIC
   useEffect(() => {
-  setLoading(false);
-}, []);
+    let currentRetry = 0;
+    let timeoutId = null;
+
+    const fetchEventData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        console.log(`📡 [App] Fetching event data (Attempt ${currentRetry + 1}/${env.api.retryAttempts + 1})...`);
+        const res = await getEvent();
+        if (res.data?.success && res.data?.data) {
+          setEvent(res.data.data);
+        } else {
+          setError("Received invalid data from server.");
+        }
+      } catch (err) {
+        const isRetryable = err.type === "NETWORK" || err.status === 503 || err.type === "TIMEOUT" || err.status === 504;
+        if (currentRetry < env.api.retryAttempts && isRetryable) {
+          currentRetry++;
+          timeoutId = setTimeout(() => {
+            fetchEventData();
+          }, env.api.retryDelay);
+        } else {
+          setError(err.message || "Unable to connect to backend server.");
+        }
+      } finally {
+        // We don't set loading false here because setEvent does it internally usually,
+        // but we ensure the skeleton has a chance to trigger its own completion.
+      }
+    };
+
+    fetchEventData();
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [setEvent, setLoading, setError]);
+
   // ✅ DETERMINES IF MAIN CONTENT SHOULD SHOW
-  const showContent = skeletonFinished;
+  const showContent = !loading && skeletonFinished;
 
   return (
     <>
