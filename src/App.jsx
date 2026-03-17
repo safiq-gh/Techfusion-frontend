@@ -42,7 +42,7 @@ function App() {
   setLoading(false);
 }, []);
   // ✅ DETERMINES IF MAIN CONTENT SHOULD SHOW
-  const showContent = !loading && skeletonFinished;
+  const showContent = skeletonFinished;
 
   return (
     <>
