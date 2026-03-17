@@ -51,7 +51,7 @@ function App() {
         if (res.data?.success && res.data?.data) {
           setEvent(res.data.data);
         } else {
-          setError("Received invalid data from server.");
+          setError({});
         }
       } catch (err) {
         const isRetryable = err.type === "NETWORK" || err.status === 503 || err.type === "TIMEOUT" || err.status === 504;
@@ -61,7 +61,7 @@ function App() {
             fetchEventData();
           }, env.api.retryDelay);
         } else {
-          setError(err.message || "Unable to connect to backend server.");
+          setError({});
         }
       } finally {
         // We don't set loading false here because setEvent does it internally usually,
